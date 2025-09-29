@@ -23,31 +23,31 @@ services:
     container_name: mgp-nginx
     ports:
       - "80:80"
-      - "443:443"
+      # - "443:443"
     volumes:
       - ./mgp-nginx.conf:/etc/nginx/conf.d/mgp-nginx.conf
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
+      # - certbot-etc:/etc/letsencrypt
+      # - certbot-var:/var/lib/letsencrypt
     depends_on:
       - frontend
       - backend
 
-  certbot:
-    image: certbot/certbot
-    container_name: mgp-certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-    entrypoint: /bin/sh -c
-    command: >
-      "trap exit TERM;
-       while :; do
-         certbot renew --webroot -w /var/lib/letsencrypt --quiet;
-         sleep 12h & wait $${!};
-       done"
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: mgp-certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #   entrypoint: /bin/sh -c
+  #   command: >
+  #     "trap exit TERM;
+  #      while :; do
+  #        certbot renew --webroot -w /var/lib/letsencrypt --quiet;
+  #        sleep 12h & wait $${!};
+  #      done"
 
 
 volumes:
   mgp-data:
-  certbot-etc:
-  certbot-var:
+  # certbot-etc:
+  # certbot-var:
