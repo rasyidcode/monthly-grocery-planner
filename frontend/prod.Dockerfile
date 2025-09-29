@@ -2,6 +2,8 @@
 
 FROM node:22-alpine AS base
 
+FROM base AS builder
+
 WORKDIR /app
 
 # Install dependencies first (for caching)
