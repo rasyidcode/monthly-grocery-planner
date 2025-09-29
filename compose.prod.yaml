@@ -6,9 +6,6 @@ services:
     container_name: mgp-frontend
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
 
@@ -20,9 +17,6 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4000
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
 
   nginx:
     image: nginx:alpine
