@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: mgp-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  backend:
+    build: ./backend
+    container_name: mgp-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
