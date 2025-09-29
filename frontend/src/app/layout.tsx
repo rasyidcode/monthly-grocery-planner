@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Monthly Grocery Planner",
-  description: "Plan your next month grocery",
+  title: "Rencana Belanja Bulanan",
+  description: "Rencanakan belanja bulananmu",
 };
 
 export default function RootLayout({
@@ -25,9 +25,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        {children}
+        <header className="sticky top-0 z-50 border-b border-neutral-200 backdrop-blur-lg shadow-2xs w-full">
+          <div className="max-w-md mx-auto px-4 py-3">
+            <h1 className="text-lg font-semibold tracking-tight">
+              🛒 Rencana Belanja Bulanan
+            </h1>
+          </div>
+        </header>
+        <main className="max-w-md mx-auto p-4 flex-1 w-full h-full flex max-h-[800px]">
+          {children}
+        </main>
       </body>
     </html>
   );
