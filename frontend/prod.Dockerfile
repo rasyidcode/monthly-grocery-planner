@@ -13,7 +13,7 @@ RUN npm ci
 
 COPY src ./src
 COPY public ./public
-COPY next.config.js .
+COPY next.config.ts .
 COPY tsconfig.json .
 
 # Environment variables must be present at build time
