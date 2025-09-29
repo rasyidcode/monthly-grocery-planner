@@ -14,7 +14,8 @@ COPY . .
 FROM node:22-alpine AS runner
 
 WORKDIR /app
+COPY --from=builder /app ./
 
 EXPOSE 4000
 
-CMD ["PORT=4000", "node", "bin/www"]
+CMD ["npm", "start"]
