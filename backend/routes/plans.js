@@ -34,6 +34,7 @@ router.post("/", authMiddleware, async (req, res) => {
     );
     res.json(result.rows[0]);
   } catch (err) {
+    console.error(err);
     if (err.code === "23505") {
       return res
         .status(400)
@@ -44,8 +45,16 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 // update
-router.put("/:planId", (req, res) => {
-  res.json({ message: "put" });
+router.put("/:planId", authMiddleware, async (req, res) => {
+  const { planId } = req.params;
+  const { month, year, status } = req.body;
+
+  try {
+    const result = {}
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update plan" });
+  }
 });
 
 // delete
