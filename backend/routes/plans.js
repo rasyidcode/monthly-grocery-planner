@@ -42,6 +42,7 @@ router.post("/", authMiddleware, async (req, res) => {
     );
     res.json(result.rows[0]);
   } catch (err) {
+    console.error(err);
     if (err.code === "23505") {
       return res
         .status(400)
