@@ -1,3 +1,5 @@
+"use strict";
+
 require("dotenv").config();
 
 const createError = require("http-errors");
@@ -11,6 +13,7 @@ const app = express();
 
 const authRoute = require("./routes/auth");
 const plansRoute = require("./routes/plans");
+const itemsRoute = require("./routes/items");
 
 app.use(cors());
 app.use(logger("dev"));
@@ -20,9 +23,13 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 app.use("/api/auth", authRoute);
-app.use("/api/plans", plansRoute);
 
-app.get("/api/me", authMiddleware, (req, res) => {
+// protected area
+app.use(authMiddleware);
+app.use("/api/plans", plansRoute);
+app.use("/api/plans", itemsRoute);
+
+app.get("/api/me", (req, res) => {
   res.json({ user: req.user });
 });
 
@@ -37,9 +44,9 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
+  // send error feedback
   res.status(err.status || 500);
-  res.json({ error: "something went wrong" });
+  res.json({ error: err.message || "Something went wrong" });
 });
 
 module.exports = app;
