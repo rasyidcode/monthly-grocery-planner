@@ -5,7 +5,7 @@ const router = express.Router();
 
 // get all
 router.get("/", authMiddleware, async (req, res) => {
-  const { year, month } = req.params;
+  const { year, month } = req.query;
   let query = "SELECT * FROM plans WHERE user_id = $1";
   let values = [req.user.id];
   if (year) {
@@ -17,7 +17,11 @@ router.get("/", authMiddleware, async (req, res) => {
     }
   }
   const result = await pool.query(query, values);
-  res.json(result.rows);
+  if (result.rowCount > 1) {
+    res.json(result.rows);
+  } else {
+    res.json(result.rows[0]);
+  }
 });
 
 // get one
