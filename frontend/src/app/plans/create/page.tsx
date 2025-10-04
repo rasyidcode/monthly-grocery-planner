@@ -1,13 +1,8 @@
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
-
 export default function createPlan() {
   return (
     <div className="flex-1 space-y-4">
       <div className="flex items-center gap-1">
-        <button className="p-1 active:bg-active rounded-full">
-          <ChevronLeftIcon className="size-6" />
-        </button>
-        <h1 className="text-log font-bold"> Buat Rencana Baru</h1>
+        <h1 className="text-lg font-bold">Buat Rencana Baru</h1>
       </div>
 
       <form className="flex-1">

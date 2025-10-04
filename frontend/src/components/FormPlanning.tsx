@@ -8,7 +8,8 @@ export default function FormPlanning() {
       onSubmit={() => {}}
       className="flex-1 space-y-4 flex flex-col h-full w-full overflow-hidden"
     >
-      <section className="bg-white shadow p-4 rounded border border-neutral-100 relative">
+      <section className="bg-white shadow p-4 rounded border border-neutral-100 relative space-y-2">
+        <h1 className="font-bold">Tambah barang</h1>
         <div className="space-y-2.5">
           <div>
             <label htmlFor="name" className="block text-sm text-neutral-600">
