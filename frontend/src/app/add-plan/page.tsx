@@ -3,49 +3,57 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 export default function AddPlanPage() {
   return (
     <div className="flex-1 flex flex-col space-y-4 w-full">
-      <h1 className="text-xl font-bold">Tambah Rencana</h1>
+      <h1 className="text-log font-bold text-pink-600">🧾 Buat Rencana Baru</h1>
 
-      <section className="bg-white shadow p-4 rounded">
-        <form className="flex flex-col space-y-2.5">
-          <div className="flex items-center gap-2">
-            <label htmlFor="name" className="w-16">
-              Nama
+      <section className="bg-white shadow-md shadow-pink-200 p-4 rounded border border-pink-200 relative">
+        <div className="absolute top-0 right-0 left-0 h-3 bg-gradient-to-b from-pink-100/60 to-transparent"></div>
+        <form className="space-y-2.5">
+          <div>
+            <label htmlFor="name" className="block text-sm text-pink-600/75">
+              Barang
             </label>
             <input
               type="text"
               name="name"
-              className="border-none outline outline-pink-300 rounded flex-1
-              px-2 focus:outline-2 focus:outline-pink-600 py-1 w-full bg-pink-50"
+              placeholder="Contoh: Sunlight"
+              className="w-full border-0 border-b border-dashed border-pink-300 bg-transparent
+              outline-none placeholder:text-pink-300 focus:border-pink-500 focus:ring-0 text-pink-500"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="price" className="w-16">
-              Harga
-            </label>
-            <input
-              type="number"
-              name="price"
-              className="border-none outline outline-pink-300 rounded flex-1
-              px-2 py-1 focus:outline-2 focus:outline-pink-600 w-full bg-pink-50"
-            />
+          <div className="grid grid-cols-[1fr_45px] gap-4">
+            <div className="">
+              <label htmlFor="price" className="block text-sm text-pink-600/75">
+                Harga (Rp)
+              </label>
+              <input
+                type="number"
+                name="price"
+                placeholder="12000"
+                className="w-full border-0 border-b border-dashed border-pink-300 bg-transparent
+              outline-none placeholder:text-pink-300 focus:border-pink-500 focus:ring-0 text-pink-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="qty" className="block text-sm text-pink-600/75">
+                Jumlah
+              </label>
+              <input
+                type="number"
+                name="qty"
+                placeholder="Jumlah"
+                defaultValue={1}
+                className="w-full border-0 border-b border-dashed border-pink-300 bg-transparent
+                outline-none placeholder:text-pink-300 focus:border-pink-500 focus:ring-0 text-pink-500"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="qty" className="w-16">
-              Jumlah
-            </label>
-            <input
-              type="number"
-              name="qty"
-              placeholder="Jumlah"
-              defaultValue={1}
-              className="border-none outline outline-pink-300 rounded flex-1
-              px-2 py-1 focus:outline-2 focus:outline-pink-600 w-full bg-pink-50"
-            />
+          <div className="flex justify-end">
+            <button className="bg-pink-600 text-sm text-white font-semibold py-1 rounded-sm px-4 shadow-md">
+              Tambahkan
+            </button>
           </div>
-          <button className="bg-pink-600 text-white font-bold py-1.5 rounded-sm">
-            Tambah
-          </button>
         </form>
+        <div className="absolute right-0 bottom-0 left-0 h-3 bg-gradient-to-t from-pink-100/60 to-transparent"></div>
       </section>
 
       <section className="bg-white shadow flex-1 p-4 rounded overflow-hidden flex flex-col space-y-2">
