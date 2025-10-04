@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: var(--color-pink-500);
+  --color-primary-hover: var(--color-pink-600);
+  --color-accent: var(--color-pink-400);
+  --color-bg: #fff7fa;
+  --color-card: var(--color-white);
+  --color-text: #2d2d2d;
+  --color-text-secondary: var(--color-gray-500);
+  --color-border: var(--color-pink-300);
+  --color-danger: var(--color-red-500);
+
+  --shadow-card: 0 2px 8px rgba(236, 72, 153, 0.1);
+  --font-sans: "Inter", "Poppins", system-ui, sans-serif;
+}
