@@ -1,12 +1,15 @@
+"use client";
+
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
-export default function AddPlanPage() {
+export default function FormPlanning() {
   return (
-    <div className="flex-1 flex flex-col space-y-4 w-full">
-      <h1 className="text-log font-bold">🧾 Buat Rencana Baru</h1>
-
+    <form
+      onSubmit={() => {}}
+      className="flex-1 space-y-4 flex flex-col h-full w-full overflow-hidden"
+    >
       <section className="bg-white shadow p-4 rounded border border-neutral-100 relative">
-        <form className="space-y-2.5">
+        <div className="space-y-2.5">
           <div>
             <label htmlFor="name" className="block text-sm text-neutral-600">
               Barang
@@ -51,14 +54,14 @@ export default function AddPlanPage() {
               Tambahkan
             </button>
           </div>
-        </form>
+        </div>
       </section>
 
       <section
         className="bg-white shadow flex-1 p-4 rounded border border-neutral-100 
        overflow-hidden flex flex-col space-y-2"
       >
-        <h2 className="text-lg font-bold">Keranjang Belanja</h2>
+        <h2 className="font-bold">Keranjang Belanja</h2>
         <ul
           className="flex-1 overflow-y-scroll divide-y divide-dashed divide-neutral-400 
         space-y-1 h-full w-full"
@@ -139,9 +142,10 @@ export default function AddPlanPage() {
           </div>
         </div>
       </section>
+
       <button className="bg-neutral-500 text-white font-bold py-1.5 rounded-sm">
         Simpan Rencana
       </button>
-    </div>
+    </form>
   );
 }

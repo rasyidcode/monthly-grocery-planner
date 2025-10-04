@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 @theme {
+  --color-active: var(--color-neutral-200);
+
+  /* border */
+  --color-dashed-color: var(--color-neutral-400);
+  --color-dashed-focus-color: var(--color-neutral-500)
+
   --color-primary: var(--color-pink-500);
   --color-primary-hover: var(--color-pink-600);
   --color-accent: var(--color-pink-400);
