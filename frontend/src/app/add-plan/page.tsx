@@ -3,38 +3,37 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 export default function AddPlanPage() {
   return (
     <div className="flex-1 flex flex-col space-y-4 w-full">
-      <h1 className="text-log font-bold text-pink-600">🧾 Buat Rencana Baru</h1>
+      <h1 className="text-log font-bold">🧾 Buat Rencana Baru</h1>
 
-      <section className="bg-white shadow-md shadow-pink-200 p-4 rounded border border-pink-200 relative">
-        <div className="absolute top-0 right-0 left-0 h-3 bg-gradient-to-b from-pink-100/60 to-transparent"></div>
+      <section className="bg-white shadow p-4 rounded border border-neutral-100 relative">
         <form className="space-y-2.5">
           <div>
-            <label htmlFor="name" className="block text-sm text-pink-600/75">
+            <label htmlFor="name" className="block text-sm text-neutral-600">
               Barang
             </label>
             <input
               type="text"
               name="name"
               placeholder="Contoh: Sunlight"
-              className="w-full border-0 border-b border-dashed border-pink-300 bg-transparent
-              outline-none placeholder:text-pink-300 focus:border-pink-500 focus:ring-0 text-pink-500"
+              className="w-full border-0 border-b border-dashed bg-transparent border-neutral-400
+              outline-none placeholder:text-neutral-300 focus:border-neutral-600 focus:ring-0"
             />
           </div>
           <div className="grid grid-cols-[1fr_45px] gap-4">
             <div className="">
-              <label htmlFor="price" className="block text-sm text-pink-600/75">
+              <label htmlFor="price" className="block text-sm text-neutral-600">
                 Harga (Rp)
               </label>
               <input
                 type="number"
                 name="price"
                 placeholder="12000"
-                className="w-full border-0 border-b border-dashed border-pink-300 bg-transparent
-              outline-none placeholder:text-pink-300 focus:border-pink-500 focus:ring-0 text-pink-500"
+                className="w-full border-0 border-b border-dashed border-neutral-400 bg-transparent
+              outline-none placeholder:text-neutral-300 focus:border-neutral-500 focus:ring-0"
               />
             </div>
             <div>
-              <label htmlFor="qty" className="block text-sm text-pink-600/75">
+              <label htmlFor="qty" className="block text-sm text-neutral-600">
                 Jumlah
               </label>
               <input
@@ -42,30 +41,35 @@ export default function AddPlanPage() {
                 name="qty"
                 placeholder="Jumlah"
                 defaultValue={1}
-                className="w-full border-0 border-b border-dashed border-pink-300 bg-transparent
-                outline-none placeholder:text-pink-300 focus:border-pink-500 focus:ring-0 text-pink-500"
+                className="w-full border-0 border-b border-dashed border-neutral-400 bg-transparent
+                outline-none placeholder:text-neutral-300 focus:border-neutral-500 focus:ring-0"
               />
             </div>
           </div>
           <div className="flex justify-end">
-            <button className="bg-pink-600 text-sm text-white font-semibold py-1 rounded-sm px-4 shadow-md">
+            <button className="bg-neutral-500 text-sm text-white font-semibold py-1 rounded-sm px-4 shadow-md">
               Tambahkan
             </button>
           </div>
         </form>
-        <div className="absolute right-0 bottom-0 left-0 h-3 bg-gradient-to-t from-pink-100/60 to-transparent"></div>
       </section>
 
-      <section className="bg-white shadow flex-1 p-4 rounded overflow-hidden flex flex-col space-y-2">
+      <section
+        className="bg-white shadow flex-1 p-4 rounded border border-neutral-100 
+       overflow-hidden flex flex-col space-y-2"
+      >
         <h2 className="text-lg font-bold">Keranjang Belanja</h2>
-        <ul className="flex-1 overflow-y-scroll divide-y divide-dotted space-y-1 h-full w-full">
+        <ul
+          className="flex-1 overflow-y-scroll divide-y divide-dashed divide-neutral-400 
+        space-y-1 h-full w-full"
+        >
           {Array.from({ length: 20 }, (value, index) => index + 1).map(
             (index) => (
               <li key={index} className="flex">
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <span className="font-light">Sunlight</span>
-                    <button className="active:bg-pink-100 rounded-full">
+                    <button className="active:bg-neutral-200 rounded-full">
                       <EllipsisVerticalIcon className="size-4" />
                     </button>
                   </div>
@@ -80,7 +84,7 @@ export default function AddPlanPage() {
                         .slice(0, -3)}
                       ) x 4
                     </span>
-                    <span className="font-semibold text-sm">
+                    <span className="font-semibold text-sm text-neutral-600">
                       {(80000)
                         .toLocaleString("id-ID", {
                           currency: "IDR",
@@ -124,7 +128,7 @@ export default function AddPlanPage() {
             )
           )}
         </ul>
-        <div className="border-t border-dotted py-1">
+        <div className="p-1 bg-neutral-100 rounded border border-neutral-200">
           <div className="flex items-center justify-between">
             <span>Total barang</span>
             <strong>30</strong>
@@ -135,8 +139,8 @@ export default function AddPlanPage() {
           </div>
         </div>
       </section>
-      <button className="bg-pink-600 text-white font-bold py-1.5 rounded-sm">
-        Submit Rencana
+      <button className="bg-neutral-500 text-white font-bold py-1.5 rounded-sm">
+        Simpan Rencana
       </button>
     </div>
   );

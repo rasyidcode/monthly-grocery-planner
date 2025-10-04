@@ -33,8 +33,8 @@ export default function RootLayout({
         bg-white"
         >
           <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-2.5">
-            <ShoppingCartIcon className="size-6 text-pink-600" />
-            <h1 className="text-lg font-semibold tracking-tight text-pink-600">
+            <ShoppingCartIcon className="size-6" />
+            <h1 className="text-lg font-semibold tracking-tight">
               Rencana Belanja Bulanan
             </h1>
           </div>
