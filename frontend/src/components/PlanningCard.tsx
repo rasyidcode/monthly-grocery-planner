@@ -7,12 +7,19 @@ import { useState } from "react";
 export default function PlanningCard() {
   const [status, setStatus] = useState<
     null | "initiating" | "planning" | "shopping" | "completed"
-  >(null);
+  >("initiating");
 
-  function handleInitiating() {
+  async function handleInitiating() {
     setStatus("initiating");
+
+    const response = await fetch(`${process.env.BACKEND_API_URL}/api/plans`, {
+      method: "POST",
+      headers: {
+        authorization: "Bearer",
+      },
+    });
     setTimeout(() => {
-      redirect("/plans/1/items/create");
+      // redirect("/plans/1/items/create");
     }, 3000);
   }
 
