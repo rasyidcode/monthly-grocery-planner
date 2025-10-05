@@ -1,5 +1,6 @@
 "use client";
 
+import { createPlan } from "@/app/action";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { redirect } from "next/navigation";
 import { useState } from "react";
@@ -7,20 +8,17 @@ import { useState } from "react";
 export default function PlanningCard() {
   const [status, setStatus] = useState<
     null | "initiating" | "planning" | "shopping" | "completed"
-  >("initiating");
+  >(null);
 
   async function handleInitiating() {
     setStatus("initiating");
 
-    const response = await fetch(`${process.env.BACKEND_API_URL}/api/plans`, {
-      method: "POST",
-      headers: {
-        authorization: "Bearer",
-      },
-    });
-    setTimeout(() => {
-      // redirect("/plans/1/items/create");
-    }, 3000);
+    await createPlan({ year: 2025, month: 11 });
+    // setTimeout(() => {
+    //   // redirect("/plans/1/items/create");
+    // }, 3000);
+
+    setStatus("planning");
   }
 
   return (

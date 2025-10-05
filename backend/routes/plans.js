@@ -4,7 +4,7 @@ const { authMiddleware } = require("../utils/auth");
 const router = express.Router();
 
 // get all
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
   const { year, month } = req.query;
   let query = "SELECT * FROM plans WHERE user_id = $1";
   let values = [req.user.id];
@@ -25,7 +25,7 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // get one
-router.get("/:planId", authMiddleware, async (req, res) => {
+router.get("/:planId", async (req, res) => {
   const { planId } = req.params;
   const result = await pool.query(
     "SELECT * FROM plans WHERE id = $1 AND user_id = $2",
@@ -37,27 +37,27 @@ router.get("/:planId", authMiddleware, async (req, res) => {
 });
 
 // create
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", async (req, res) => {
   const { month, year } = req.body;
   try {
     const result = await pool.query(
       "INSERT INTO plans (user_id, month, year) VALUES ($1, $2, $3) RETURNING *",
       [req.user.id, month, year]
     );
-    res.json(result.rows[0]);
+    res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
     if (err.code === "23505") {
       return res
         .status(400)
-        .json({ error: "Plan already exist for this month" });
+        .json({ error: "Plan already exist for the month" });
     }
     res.status(500).json({ error: "Could not create plan" });
   }
 });
 
 // update
-router.put("/:planId", authMiddleware, async (req, res) => {
+router.put("/:planId", async (req, res) => {
   const { month, year, status } = req.body;
   const { planId } = req.params;
   try {
@@ -79,7 +79,7 @@ router.put("/:planId", authMiddleware, async (req, res) => {
 });
 
 // patch
-router.patch("/:planId", authMiddleware, async (req, res) => {
+router.patch("/:planId", async (req, res) => {
   const { month, year, status } = req.body;
   const { planId } = req.params;
   try {
@@ -102,7 +102,7 @@ router.patch("/:planId", authMiddleware, async (req, res) => {
 });
 
 // delete
-router.delete("/:planId", authMiddleware, async (req, res) => {
+router.delete("/:planId", async (req, res) => {
   const result = await pool.query(
     "DELETE FROM plans WHERE id = $1 RETURNING *",
     [req.params.planId]

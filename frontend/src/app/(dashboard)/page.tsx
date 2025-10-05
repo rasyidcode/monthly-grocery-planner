@@ -56,14 +56,14 @@ export default async function Home() {
           <p>Tidak ada rencana</p>
         </div>
       </section> */}
-      <form
+      {/* <form
         action={async (formData) => {
           "use server";
           await signOut();
         }}
       >
         <button type="submit">Logout</button>
-      </form>
+      </form> */}
     </div>
   );
 }
