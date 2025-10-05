@@ -1,3 +1,4 @@
+import { auth, signOut } from "@/auth";
 import PlanningCard from "@/components/PlanningCard";
 import {
   ArrowLongDownIcon,
@@ -10,6 +11,7 @@ import {
 import Link from "next/link";
 
 export default async function Home() {
+  const session = await auth();
   const date = new Date();
   // const currentMonth = date.getMonth() + 1;
   // const nextMonth = currentMonth + 1;
@@ -54,6 +56,14 @@ export default async function Home() {
           <p>Tidak ada rencana</p>
         </div>
       </section> */}
+      <form
+        action={async (formData) => {
+          "use server";
+          await signOut();
+        }}
+      >
+        <button type="submit">Logout</button>
+      </form>
     </div>
   );
 }

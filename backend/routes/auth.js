@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require("./../db/pool");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("./../utils/auth");
+const createError = require("http-errors");
 
 // signup
 router.post("/signup", async (req, res) => {
@@ -24,20 +25,23 @@ router.post("/signup", async (req, res) => {
 });
 
 // signin
-router.post("/signin", async (req, res) => {
+router.post("/signin", async (req, res, next) => {
   const { email, password } = req.body;
 
   const result = await pool.query("SELECT * FROM users WHERE email = $1", [
     email,
   ]);
   const user = result.rows[0];
-  if (!user) return res.status(400).json({ error: "Invalid credentials" });
+  if (!user) next(createError(400, "Invalid credentials"));
 
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(400).json({ error: "Invalid credentials" });
+  if (!valid) next(createError(400, "Invalid credentials"));
 
   const token = generateToken(user);
-  res.json({ token, user: { id: user.id, email: user.email } });
+  res.json({
+    token,
+    user: { id: user.id, name: user.name, email: user.email },
+  });
 });
 
 module.exports = router;
