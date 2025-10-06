@@ -3,11 +3,20 @@
 import { createPlan } from "@/app/action";
 import { Plan } from "@/types";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function PlanningCard({ plan }: { plan: Plan }) {
   const [status, setStatus] = useState<Plan["status"] | "initiating">(
     plan.status ?? null
+  );
+  const priceTotal = plan.items?.reduce(
+    (acc, curr) => acc + (curr.price ?? 0),
+    0
+  );
+  const itemsTotal = plan.items?.reduce(
+    (acc, curr) => acc + (curr.qty ?? 0),
+    0
   );
 
   async function handleInitiating() {
@@ -61,22 +70,30 @@ export default function PlanningCard({ plan }: { plan: Plan }) {
           <div className="mt-4">
             <div className="flex items-baseline justify-between">
               <h2>Prediksi total harga</h2>
-              <strong className="text-green-600">Rp. 520,000</strong>
+              <strong className="text-green-600">
+                {priceTotal
+                  ?.toLocaleString("id-ID", {
+                    currency: "IDR",
+                    style: "currency",
+                  })
+                  .slice(0, -3)}
+              </strong>
             </div>
             <div className="flex items-baseline justify-between">
               <h2>Prediksi jumlah barang</h2>
-              <strong>69</strong>
+              <strong>{itemsTotal}</strong>
             </div>
             <div className="flex gap-2 mt-4">
               <button className="flex-1 bg-green-600 text-white font-bold py-1.5 rounded-sm">
                 Mulai belanja
               </button>
-              <button
+              <Link
+                href={`plans/${plan.id}/items/add`}
                 className="flex-1 border-green-600 border-2 text-green-600 font-bold 
-              rounded-sm py-1.5"
+              rounded-sm py-1.5 flex items-center justify-center"
               >
                 Lihat detail
-              </button>
+              </Link>
             </div>
           </div>
         </div>

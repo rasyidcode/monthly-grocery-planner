@@ -1,10 +1,10 @@
 const express = require("express");
 const pool = require("../db/pool");
-require("../utils/auth");
 const router = express.Router();
+const createError = require("http-errors");
 
 // get all
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   const { year, month } = req.query;
   try {
     let query = `
@@ -43,14 +43,32 @@ router.get("/", async (req, res) => {
 });
 
 // get one
-router.get("/:planId", async (req, res) => {
+router.get("/:planId", async (req, res, next) => {
   const { planId } = req.params;
   const result = await pool.query(
-    "SELECT * FROM plans WHERE id = $1 AND user_id = $2",
+    `SELECT
+      p.id, p.month, p.year, p.status,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', i.id,
+            'name', i.name,
+            'qty', i.qty,
+            'price', i.price
+          )
+        ) FILTER (WHERE i.id IS NOT NULL), '[]'
+      ) AS items
+    FROM plans p
+    LEFT JOIN items i ON p.id = i.plan_id
+    WHERE p.id = $1 AND p.user_id = $2 GROUP BY p.id ORDER BY p.year DESC, p.month DESC;`,
     [planId, req.user.id]
   );
-  if (!result.rows.length)
-    return res.status(404).json({ error: "Plan not found" });
+
+  if (!result.rows[0]) {
+    next(createError(404, "Plan not found"));
+    return;
+  }
+
   res.json(result.rows[0]);
 });
 

@@ -2,11 +2,11 @@
 
 const express = require("express");
 const pool = require("../db/pool");
-const { authMiddleware } = require("../utils/auth");
 const router = express.Router();
+const createError = require("http-errors");
 
 // get all under plan
-router.get("/:planId/items", authMiddleware, async (req, res) => {
+router.get("/:planId/items", async (req, res) => {
   const { planId } = req.params;
   const result = await pool.query(
     `SELECT
@@ -21,16 +21,17 @@ router.get("/:planId/items", authMiddleware, async (req, res) => {
 });
 
 // create
-router.post("/:planId/items", authMiddleware, async (req, res) => {
+router.post("/:planId/items", async (req, res, next) => {
   const { planId } = req.params;
   const plan = await pool.query(
     "SELECT * FROM plans WHERE id = $1 AND user_id = $2",
     [planId, req.user.id]
   );
-  console.log("logged user", req.user);
-  console.log(plan.rows);
-  res.send("test");
-  return;
+  if (!plan.rows[0]) {
+    next(createError(400, "Bad request"));
+    return;
+  }
+
   const { name, qty, price } = req.body;
   try {
     const result = await pool.query(
@@ -44,12 +45,12 @@ router.post("/:planId/items", authMiddleware, async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Could not create item" });
+    next(createError(500, "Could not create item"));
   }
 });
 
 // delete
-router.delete("/:planId/items/:itemId", authMiddleware, async (req, res) => {
+router.delete("/:planId/items/:itemId", async (req, res) => {
   const { planId, itemId } = req.params;
   const result = await pool.query(
     "DELETE FROM items WHERE id = $1 AND plan_id $2 RETURNING *",

@@ -1,36 +1,15 @@
 "use client";
 
 import { ChevronLeftIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { redirect, useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getPlanById } from "@/app/action";
+import { redirect, usePathname } from "next/navigation";
 
 export default function Header() {
-  const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const { id } = useParams();
-  const [year, setYear] = useState<number | null>(null);
-  const [monthTitle, setMonthTitle] = useState("Bulanan");
 
   function handleBack() {
     redirect("/");
   }
-
-  useEffect(() => {
-    if (!id) return;
-
-    async function getPlan(id: number) {
-      const plan = await getPlanById(id);
-      if (plan) {
-        setYear(plan.year ?? null);
-        const planDate = new Date(plan.year!, plan.month! - 1, 1);
-        setMonthTitle(planDate.toLocaleString("id-ID", { month: "long" }));
-      }
-    }
-
-    getPlan(parseInt(id as string));
-  }, [id]);
 
   return (
     <header
@@ -49,7 +28,7 @@ export default function Header() {
         )}
 
         <h1 className="text-lg font-semibold tracking-tight truncate">
-          Rencana Belanja {monthTitle} {year}
+          Rencana Belanja Bulanan
         </h1>
       </div>
     </header>
