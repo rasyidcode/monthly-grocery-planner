@@ -1,14 +1,14 @@
 "use client";
 
 import { createPlan } from "@/app/action";
+import { Plan } from "@/types";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 
-export default function PlanningCard() {
-  const [status, setStatus] = useState<
-    null | "initiating" | "planning" | "shopping" | "completed"
-  >(null);
+export default function PlanningCard({ plan }: { plan: Plan }) {
+  const [status, setStatus] = useState<Plan["status"] | "initiating">(
+    plan.status ?? null
+  );
 
   async function handleInitiating() {
     setStatus("initiating");
@@ -23,11 +23,11 @@ export default function PlanningCard() {
 
   return (
     <>
-      <div
-        className="mt-2 flex flex-col items-center justify-center flex-1
+      {status === null && (
+        <div
+          className="mt-2 flex flex-col items-center justify-center flex-1
          rounded-sm bg-white shadow p-4"
-      >
-        {status === null && (
+        >
           <button
             type="button"
             onClick={handleInitiating}
@@ -37,19 +37,22 @@ export default function PlanningCard() {
             <ChevronRightIcon className="size-4" />
             Buat rencana bulan depan
           </button>
-        )}
+        </div>
+      )}
 
-        {status === "initiating" && (
-          <>
-            <div className="loader"></div>
-            <p className="text-sm text-neutral-400">Proses inisiasi...</p>
-          </>
-        )}
-      </div>
+      {status === "initiating" && (
+        <div
+          className="mt-2 flex flex-col items-center justify-center flex-1
+         rounded-sm bg-white shadow p-4"
+        >
+          <div className="loader"></div>
+          <p className="text-sm text-neutral-400">Proses inisiasi...</p>
+        </div>
+      )}
 
-      {/* Planning */}
       {/* Shopping button only active on first day of next month*/}
-      {/* <div
+      {status === "planning" && (
+        <div
           className="mt-2 flex flex-col rounded-sm
         p-4 shadow bg-white"
         >
@@ -65,18 +68,19 @@ export default function PlanningCard() {
               <strong>69</strong>
             </div>
             <div className="flex gap-2 mt-4">
-              <button className="flex-1 bg-pink-600 text-white font-bold py-1.5 rounded-sm">
+              <button className="flex-1 bg-green-600 text-white font-bold py-1.5 rounded-sm">
                 Mulai belanja
               </button>
               <button
-                className="flex-1 border-pink-600 border-2 text-pink-600 font-bold 
+                className="flex-1 border-green-600 border-2 text-green-600 font-bold 
               rounded-sm py-1.5"
               >
                 Lihat detail
               </button>
             </div>
           </div>
-        </div> */}
+        </div>
+      )}
 
       {/* Shopping */}
 

@@ -1,26 +1,44 @@
 const express = require("express");
 const pool = require("../db/pool");
-const { authMiddleware } = require("../utils/auth");
+require("../utils/auth");
 const router = express.Router();
 
 // get all
 router.get("/", async (req, res) => {
   const { year, month } = req.query;
-  let query = "SELECT * FROM plans WHERE user_id = $1";
-  let values = [req.user.id];
-  if (year) {
-    query += " AND year=$2";
-    values.push(year);
-    if (month) {
-      query += " AND month=$3";
-      values.push(month);
+  try {
+    let query = `
+    SELECT
+      p.id, p.month, p.year, p.status,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', i.id,
+            'name', i.name,
+            'qty', i.qty,
+            'price', i.price
+          )
+        ) FILTER (WHERE i.id IS NOT NULL), '[]'
+      ) AS items
+    FROM plans p
+    LEFT JOIN items i ON p.id = i.plan_id
+    WHERE p.user_id = $1
+  `;
+    let values = [req.user.id];
+    if (year) {
+      query += " AND p.year=$2";
+      values.push(year);
+      if (month) {
+        query += " AND p.month=$3";
+        values.push(month);
+      }
     }
-  }
-  const result = await pool.query(query, values);
-  if (result.rowCount > 1) {
+    query += " GROUP BY p.id ORDER BY p.year DESC, p.month DESC;";
+
+    const result = await pool.query(query, values);
     res.json(result.rows);
-  } else {
-    res.json(result.rows[0]);
+  } catch (err) {
+    next(err);
   }
 });
 

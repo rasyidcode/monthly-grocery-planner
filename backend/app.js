@@ -14,10 +14,12 @@ const app = express();
 const authRoute = require("./routes/auth");
 const plansRoute = require("./routes/plans");
 const itemsRoute = require("./routes/items");
+const { prettyJson } = require("./middleware/prettyJson");
 
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
+app.use(prettyJson);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
