@@ -2,7 +2,10 @@
 
 import { createPlan } from "@/app/action";
 import { Plan } from "@/types";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronRightIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -65,7 +68,12 @@ export default function PlanningCard({ plan }: { plan: Plan }) {
           className="mt-2 flex flex-col rounded-sm
         p-4 shadow bg-white"
         >
-          <h1 className="text-xl font-bold">November 2025</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">November 2025</h1>
+            <button className="active:bg-neutral-200 rounded-full p-1">
+              <EllipsisVerticalIcon className="size-5" />
+            </button>
+          </div>
           <hr className="border-neutral-500 border-dotted" />
           <div className="mt-4">
             <div className="flex items-baseline justify-between">
