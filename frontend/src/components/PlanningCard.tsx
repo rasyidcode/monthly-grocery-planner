@@ -13,14 +13,10 @@ export default function PlanningCard({ plan }: { plan: Plan }) {
   const [status, setStatus] = useState<Plan["status"] | "initiating">(
     plan.status ?? null
   );
-  const priceTotal = plan.items?.reduce(
-    (acc, curr) => acc + (curr.price ?? 0),
-    0
-  );
-  const itemsTotal = plan.items?.reduce(
-    (acc, curr) => acc + (curr.qty ?? 0),
-    0
-  );
+  const priceTotal =
+    plan.items?.reduce((acc, curr) => acc + (curr.price ?? 0), 0) ?? 0;
+  const itemsTotal =
+    plan.items?.reduce((acc, curr) => acc + (curr.qty ?? 0), 0) ?? 0;
 
   async function handleInitiating() {
     setStatus("initiating");
