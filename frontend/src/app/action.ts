@@ -120,3 +120,59 @@ export async function createItem({
 
   return await response.json();
 }
+
+export async function updateItem({
+  planId,
+  id,
+  name,
+  price,
+  qty,
+}: {
+  planId: number;
+  id: number;
+  name: string;
+  price: number;
+  qty: number;
+}): Promise<Item | null> {
+  const session = await auth();
+  const response = await fetch(
+    `${process.env.BACKEND_API_URL}/api/plans/${planId}/items/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${session?.user.accessToken}`,
+      },
+      body: JSON.stringify({
+        name: name,
+        price: price,
+        qty: qty,
+      }),
+    }
+  );
+  if (!response.ok) {
+    return null;
+  }
+
+  return await response.json();
+}
+
+export async function deleteItem({
+  planId,
+  id
+}: {
+  planId: number;
+  id: number;
+}): Promise<void> {
+  const session = await auth();
+  await fetch(
+    `${process.env.BACKEND_API_URL}/api/plans/${planId}/items/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${session?.user.accessToken}`,
+      },
+    }
+  );
+}

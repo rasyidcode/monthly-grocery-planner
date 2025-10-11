@@ -1,9 +1,11 @@
 "use client";
 
-import { createItem } from "@/app/action";
+import { createItem, deleteItem, updateItem } from "@/app/action";
 import { Item } from "@/types";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { FormEvent, useRef, useState } from "react";
+import ShoppingCart from "./ShoppingCart";
+import { ItemEditingContext } from "./ItemEditingContext";
+import { useRouter } from "next/navigation";
 
 export default function FormPlanning({
   initialItems,
@@ -12,32 +14,103 @@ export default function FormPlanning({
   initialItems?: Item[];
   planId?: number;
 }) {
+  const router = useRouter();
+  const [id, setId] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const priceNum = useRef(0);
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState("1");
   const [items, setItems] = useState<Item[]>(initialItems ?? []);
+  const [formState, setFormState] = useState<"creating" | "editing">(
+    "creating"
+  );
 
-  const priceTotal = items.reduce((acc, curr) => acc + (curr.price ?? 0), 0);
-  const itemsTotal = items.reduce((acc, curr) => acc + (curr.qty ?? 0), 0);
+  const priceNum = useRef(0);
+  const qtyNum = useRef(1);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const newPlan = await createItem({
-      planId: planId ?? 0,
-      name: name,
-      price: priceNum.current,
-      qty: qty,
-    });
+    if (formState === "creating") {
+      const newItem = await createItem({
+        planId: planId ?? 0,
+        name: name,
+        price: priceNum.current,
+        qty: qtyNum.current,
+      });
 
-    setItems([...items, newPlan ?? {}]);
+      setItems([...items, newItem ?? {}]);
+    } else {
+      const updatedItem = await updateItem({
+        planId: planId ?? 0,
+        id: id ?? 0,
+        name: name,
+        price: priceNum.current,
+        qty: qtyNum.current,
+      });
+
+      if (updatedItem) {
+        setItems(
+          items.map((i) => {
+            if (i.id === id) {
+              return updatedItem;
+            } else {
+              return i;
+            }
+          })
+        );
+      }
+    }
 
     // reset form
+    setId(null);
     setName("");
     setPrice("");
     priceNum.current = 0;
-    setQty(1);
+    setQty("1");
+    qtyNum.current = 1;
+    setFormState("creating");
+  }
+
+  async function handleItemEdit(item: Item) {
+    setFormState("editing");
+    setId(item.id ?? null);
+    setName(item.name ?? "");
+
+    const itemPrice = item.price ?? 0;
+    setPrice(
+      itemPrice.toLocaleString("id-ID", {
+        currency: "IDR",
+        style: "currency",
+        minimumFractionDigits: 0,
+      })
+    );
+    priceNum.current = itemPrice;
+
+    const itemQty = item.qty ?? 1;
+    setQty(itemQty.toString());
+    qtyNum.current = itemQty;
+  }
+
+  function handleCancel() {
+    setFormState("creating");
+    setId(null);
+    setName("");
+    setPrice("");
+    priceNum.current = 0;
+    setQty("1");
+    qtyNum.current = 1;
+  }
+
+  async function handleItemDelete(id?: number) {
+    await deleteItem({ planId: planId ?? 0, id: id ?? 0 });
+
+    setItems(
+      items.filter((i) => {
+        if (i.id !== id) {
+          return i;
+        }
+      })
+    );
   }
 
   return (
@@ -93,123 +166,79 @@ export default function FormPlanning({
               <input
                 type="number"
                 name="qty"
-                placeholder="Jumlah"
+                placeholder="1"
                 value={qty}
-                onChange={(e) => setQty(parseInt(e.target.value ?? 0))}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw === "") {
+                    setQty("");
+                  } else {
+                    setQty(raw);
+                  }
+                  qtyNum.current = Number(e.target.value);
+                }}
                 className="w-full border-0 border-b border-dashed border-neutral-400 bg-transparent
                 outline-none placeholder:text-neutral-300 focus:border-neutral-500 focus:ring-0"
               />
             </div>
           </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="bg-green-600 text-sm text-white font-semibold py-1 rounded-sm px-4 shadow-md"
-            >
-              Tambahkan
-            </button>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1">
+              <strong>
+                {(priceNum.current * qtyNum.current).toLocaleString("id-ID", {
+                  currency: "IDR",
+                  style: "currency",
+                  minimumFractionDigits: 0,
+                })}
+              </strong>
+            </div>
+            <div className="flex items-center gap-1">
+              {formState === "creating" && (
+                <button
+                  type="submit"
+                  className="bg-green-600 text-sm text-white font-semibold py-1 rounded-sm px-4 shadow-md"
+                >
+                  Tambahkan
+                </button>
+              )}
+              {formState === "editing" && (
+                <>
+                  <button
+                    type="submit"
+                    className="border border-green-600 text-green-600 text-sm font-semibold py-1 rounded-sm
+                  px-4 shadow-md"
+                    onClick={handleCancel}
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-green-600 text-sm text-white font-semibold py-1 rounded-sm px-4 shadow-md"
+                  >
+                    Ubah
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </form>
       </section>
 
-      <section
-        className="bg-white shadow flex-1 p-4 rounded border border-neutral-100 
-       overflow-hidden flex flex-col space-y-2"
-      >
-        <h2 className="font-bold">Keranjang Belanja</h2>
-        <ul
-          className="flex-1 overflow-y-scroll divide-y divide-dashed divide-neutral-400 
-        space-y-1 h-full w-full"
-        >
-          {items.length === 0 && (
-            <li className="font-light text-sm text-neutral-600">
-              Tidak ada item
-            </li>
-          )}
-          {items.length > 0 &&
-            items.map((item) => (
-              <li key={item.id} className="flex">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-light">{item.name}</span>
-                    <button className="active:bg-neutral-200 rounded-full">
-                      <EllipsisVerticalIcon className="size-4" />
-                    </button>
-                  </div>
-                  <div className="space-x-2 flex items-center justify-between">
-                    <span className="text-neutral-500 text-sm">
-                      (
-                      {(item.price ?? 0)
-                        .toLocaleString("id-ID", {
-                          currency: "IDR",
-                          style: "currency",
-                        })
-                        .slice(0, -3)}
-                      ) x {item.qty ?? 1}
-                    </span>
-                    <span className="font-semibold text-sm text-neutral-600">
-                      {((item.price ?? 0) * (item.qty ?? 1))
-                        .toLocaleString("id-ID", {
-                          currency: "IDR",
-                          style: "currency",
-                        })
-                        .slice(0, -3)}
-                    </span>
-                  </div>
-                </div>
-              </li>
-              //   <li key={index} className="flex items-center gap-2 w-full">
-              //     <label className="w-full">
-              //       <input
-              //         type="text"
-              //         placeholder="Nama"
-              //         className="border-none outline outline-pink-300 bg-pink-50
-              //         text-sm px-1 w-full"
-              //         value="Sabun cuci"
-              //       />
-              //     </label>
-              //     <label className="w-full">
-              //       <input
-              //         type="text"
-              //         placeholder="Harga"
-              //         className="border-none outline outline-pink-300 bg-pink-50 w-full
-              //         text-sm px-1"
-              //         value="Rp. 30,000"
-              //       />
-              //     </label>
-              //     <label className="w-full">
-              //       <input
-              //         type="text"
-              //         placeholder="Jumlah"
-              //         className="border-none outline outline-pink-300 bg-pink-50
-              //         text-sm px-1 max-w-max w-full"
-              //         value={1}
-              //       />
-              //     </label>
-              //     <strong>Rp.78,000</strong>
-              //   </li>
-            ))}
-        </ul>
-        <div className="p-1 bg-neutral-100 rounded border border-neutral-200">
-          <div className="flex items-center justify-between">
-            <span>Total barang</span>
-            <strong>{itemsTotal}</strong>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Total harga</span>
-            <strong>
-              {priceTotal
-                .toLocaleString("id-ID", {
-                  currency: "IDR",
-                  style: "currency",
-                })
-                .slice(0, -3)}
-            </strong>
-          </div>
-        </div>
-      </section>
+      <ItemEditingContext value={id}>
+        <ShoppingCart
+          items={items}
+          onItemEdit={handleItemEdit}
+          onItemDelete={handleItemDelete}
+        />
+      </ItemEditingContext>
 
-      <button className="bg-green-600 text-white font-bold py-1.5 rounded-sm">
+      <button
+        type="button"
+        className="bg-green-600 text-white font-bold py-1.5 rounded-sm"
+        onClick={() => {
+          router.replace("/");
+        }}
+      >
         Simpan
       </button>
     </div>

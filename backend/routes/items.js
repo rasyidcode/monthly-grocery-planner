@@ -49,11 +49,41 @@ router.post("/:planId/items", async (req, res, next) => {
   }
 });
 
+// update
+router.put("/:planId/items/:id", async (req, res, next) => {
+  const { planId, id } = req.params;
+  const plan = await pool.query(
+    "SELECT * FROM plans WHERE id = $1 AND user_id = $2",
+    [planId, req.user.id]
+  );
+  if (!plan.rows[0]) {
+    next(createError(400, "Bad request"));
+    return;
+  }
+
+  const { name, qty, price } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE items
+        SET name = $1,
+            price = $2,
+            qty = $3
+        WHERE
+          plan_id = $4 AND id = $5 RETURNING *`,
+      [name, price, qty, planId, id]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    next(createError(500, "Could not update item"));
+  }
+});
+
 // delete
 router.delete("/:planId/items/:itemId", async (req, res) => {
   const { planId, itemId } = req.params;
   const result = await pool.query(
-    "DELETE FROM items WHERE id = $1 AND plan_id $2 RETURNING *",
+    "DELETE FROM items WHERE id = $1 AND plan_id = $2 RETURNING *",
     [itemId, planId]
   );
   if (result.rows.length === 0)

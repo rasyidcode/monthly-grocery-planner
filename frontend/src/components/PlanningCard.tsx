@@ -7,6 +7,7 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export default function PlanningCard({ plan }: { plan: Plan }) {
@@ -21,12 +22,8 @@ export default function PlanningCard({ plan }: { plan: Plan }) {
   async function handleInitiating() {
     setStatus("initiating");
 
-    await createPlan({ year: 2025, month: 11 });
-    // setTimeout(() => {
-    //   // redirect("/plans/1/items/create");
-    // }, 3000);
-
-    setStatus("planning");
+    const plan = await createPlan({ year: 2025, month: 11 });
+    redirect(`/plans/${plan?.id}/items`);
   }
 
   return (
@@ -92,7 +89,7 @@ export default function PlanningCard({ plan }: { plan: Plan }) {
                 Mulai belanja
               </button>
               <Link
-                href={`plans/${plan.id}/items/add`}
+                href={`plans/${plan.id}/items`}
                 className="flex-1 border-green-600 border-2 text-green-600 font-bold 
               rounded-sm py-1.5 flex items-center justify-center"
               >
